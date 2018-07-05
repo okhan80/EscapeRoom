@@ -2,6 +2,7 @@
 
 #include "Grabber.h"
 #include "Engine/World.h"
+#include "DrawDebugHelpers.h"
 
 #define OUT	//	Annotation to remind us that values are being modified through reference modification
 
@@ -34,10 +35,15 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FVector PlayerPosition;
 	FRotator PlayerRotation;
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerPosition, OUT PlayerRotation);
-	UE_LOG(LogTemp, Warning, TEXT("Player Position: %s Player Rotation: %s"),
-		*PlayerPosition.ToString(),
-		*PlayerRotation.ToString()
-	);
+	//UE_LOG(LogTemp, Warning, TEXT("Player Position: %s Player Rotation: %s"),
+	//	*PlayerPosition.ToString(),
+	//	*PlayerRotation.ToString()
+	//);
+
+	FVector LineTraceEnd = PlayerPosition + PlayerRotation.Vector() * Reach;
+
+	//	Draw red trace in world to visualize
+	DrawDebugLine(GetWorld(), PlayerPosition, LineTraceEnd, FColor::Red, false, -1.0f, 0.0f, 10.0f);
 	//	Raycast out to reach distance
 
 	//	See what we hit
