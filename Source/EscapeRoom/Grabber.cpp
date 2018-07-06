@@ -25,16 +25,32 @@ void UGrabber::BeginPlay()
 
 	///	Look for attached physics handle
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle)
+	if (ensureMsgf(PhysicsHandle, TEXT("%s is missing a UPhysicsHandleComponent. Please add this component to continue."),
+			*GetOwner()->GetName()))
 	{
-		//	Physics handle is foun
+		//	Physics handle is found
 	}
-	else
+	//else
+	//{
+	//	//UE_LOG(LogTemp, Error, TEXT("%s is missing a UPhysicsHandleComponent. Please add this component to continue."),
+	//	//	*GetOwner()->GetName()
+	//	//);
+	//	//	This will crash out the editor, not a good way to check. Instead use ensure
+	//	//checkf(Input, TEXT("%s is missing a UPhysicsHandleComponent. Please add this component to continue."),
+	//	//	*GetOwner()->GetName());
+	//}
+
+	///	Look for attached input component
+	Input = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (ensureMsgf(Input, TEXT("%s is missing a UInputComponent. Please add this component to continue."),
+		*GetOwner()->GetName()))
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s is missing a UPhysicsHandleComponent. Please add this component to continue."),
-			*GetOwner()->GetName()
-		);
+		UE_LOG(LogTemp, Warning, TEXT("Input component found on %s"), *GetOwner()->GetName());
+
+		/// Bind the input axis
+		Input->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
 	}
+
 }
 
 
@@ -72,5 +88,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	}
 	
 
+}
+
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grab key pressed"));
 }
 
