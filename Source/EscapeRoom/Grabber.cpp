@@ -2,7 +2,6 @@
 
 #include "Grabber.h"
 #include "Engine/World.h"
-#include "DrawDebugHelpers.h"
 
 #define OUT	//	Annotation to remind us that values are being modified through reference modification
 
@@ -99,9 +98,17 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	///	Get player viewpoint this tick (Triple slash will get rid of documentation)
+	FVector PlayerPosition;
+	FRotator PlayerRotation;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerPosition, OUT PlayerRotation);
+	FVector LineTraceEnd = PlayerPosition + PlayerRotation.Vector() * Reach;
 	//	If the physics handle is attached
+	if (PhysicsHandle->GrabbedComponent)
+	{
 		//	move the object we are holding
-
+		PhysicsHandle->SetTargetLocationAndRotation(LineTraceEnd, PlayerRotation);
+	}
 }
 
 void UGrabber::Grab()
@@ -109,14 +116,25 @@ void UGrabber::Grab()
 	UE_LOG(LogTemp, Warning, TEXT("Grab key pressed"));
 
 	///	Line tracne and try and erach any actors with physics body collision channels set
-	GetFirstPhysicsBodyInReach();
+	FHitResult HitResult = GetFirstPhysicsBodyInReach();
+	auto ComponentToGrab = HitResult.GetComponent();
+	auto ActorToGrab = HitResult.GetActor();
+	
 	///	If we hit something then attach a physics handle
-	//	TODO attach physics handle
+	if (ActorToGrab)
+	{
+		PhysicsHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, 
+			NAME_None, 
+			ActorToGrab->GetActorLocation(), 
+			ActorToGrab->GetActorRotation()
+		);
+	}
+
 }
 
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Key has been released"));
-	//	TODO release physics handle
+	PhysicsHandle->ReleaseComponent();
 }
 
