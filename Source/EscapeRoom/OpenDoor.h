@@ -18,6 +18,7 @@ public:
 	UOpenDoor();
 	void OpenDoor();
 	void CloseDoor();
+	
 
 protected:
 	// Called when the game starts
@@ -26,6 +27,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -39,6 +42,7 @@ private:
 
 	float LastDoorOpenTime;
 
-	AActor* ActorThatOpens;
 	AActor* Owner;
+
+	float GetTotalMassOfActorsOnPlate();
 };
