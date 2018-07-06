@@ -31,7 +31,6 @@ void UOpenDoor::CloseDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 
@@ -60,6 +59,11 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate()
 
 	//	Find all of the overlapping actors
 	TArray<AActor*> OverlappingActors;
+	if (!PressurePlate)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Trigger volume needs to be set for open door component"))
+		return TotalMass;
+	}
 	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
 
 	//	Iterate through them adding their masses
