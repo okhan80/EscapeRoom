@@ -17,6 +17,7 @@ class ESCAPEROOM_API UGrabber : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UGrabber();
+	
 
 protected:
 	// Called when the game starts
@@ -35,4 +36,15 @@ private:
 
 	//	Ray-cast and grab what's in reach
 	void Grab();
+	void Release();
+
+	//	Find attached physics component
+	void FindPhysicsHandleComponent();
+
+	//	Setup input component
+	void SetupInputComponent();
+
+	//	Return hit for first physics body in reach
+	const FHitResult GetFirstPhysicsBodyInReach();
+
 };
