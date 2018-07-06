@@ -12,8 +12,6 @@ UOpenDoor::UOpenDoor()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	Owner = GetOwner();
 }
 
 
@@ -31,6 +29,12 @@ void UOpenDoor::CloseDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
+	Owner = GetOwner();
+
+	if (!PressurePlate)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s missing pressure plate"), *GetOwner()->GetName())
+	}
 }
 
 
@@ -61,7 +65,6 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate()
 	TArray<AActor*> OverlappingActors;
 	if (!PressurePlate)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Trigger volume needs to be set for open door component"))
 		return TotalMass;
 	}
 	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
