@@ -17,11 +17,11 @@ class ESCAPEROOM_API UGrabber : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UGrabber();
-	
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
 
 public:	
 	// Called every frame
@@ -30,6 +30,8 @@ public:
 private:
 	//	How far from the player we can reach in cm
 	float Reach = 100.0f;
+	
+
 
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent* Input = nullptr;
@@ -45,6 +47,9 @@ private:
 	void SetupInputComponent();
 
 	//	Return hit for first physics body in reach
-	const FHitResult GetFirstPhysicsBodyInReach();
+	FHitResult GetFirstPhysicsBodyInReach() const;
+
+	//	Retrieve the start and end points for the line trace being cast
+	FTwoVectors GetLineTracePoints(FRotator& out_Rotation) const;
 
 };
